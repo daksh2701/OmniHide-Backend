@@ -198,8 +198,9 @@
         document.getElementById('statusBox').style.display = 'none';
 
         try {
+            // REMOVED TRAILING SLASHES FROM URL CONSTRUCTION
             const baseUrl = "https://omnihide-backend.onrender.com";
-            const url = `${baseUrl}/${mode}/${type}/`;
+            const url = `${baseUrl}/${mode}/${type}`;
 
             const response = await fetch(url, { method: 'POST', body: formData });
 
@@ -214,18 +215,18 @@
                     showStatus("✅ Success: Data secured! File downloaded.", "success");
                 } else {
                     const err = await response.json();
-                    showStatus("❌ Error: " + (err.detail || "Server rejected request."), "error");
+                    showStatus("❌ Error: " + (err.detail || "Route Not Found"), "error");
                 }
             } else {
                 const result = await response.json();
                 if (result.status === "success") {
                     showStatus(`🔓 <b>Decrypted:</b><div class="decoded-text">${result.secret_message}</div>`, "success");
                 } else {
-                    showStatus("❌ Error: " + result.message, "error");
+                    showStatus("❌ Error: " + (result.message || "Invalid Response"), "error");
                 }
             }
         } catch (error) {
-            showStatus("❌ Network Error: Backend might be down or sleeping.", "error");
+            showStatus("❌ Network Error: Backend is unreachable.", "error");
         }
 
         btnText.innerText = mode === 'encode' ? 'Initialize Encryption' : 'Run Decryption Protocol';
